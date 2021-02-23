@@ -2,6 +2,8 @@
 
 var Project = require('../models/project');
 var fs = require('fs');
+const { exists } = require('../models/project');
+var path = require('path');
 
 var controller = {
     home: function (req, res) {
@@ -123,7 +125,33 @@ var controller = {
                 message: fileName
             }) 
         }
+    },
+
+    getImageFile: function(req, res){
+         var file = req.params.image;
+         var path_file = './uploads/' + file;
+         
+         fs.access(path_file, fs.constants.F_OK, (err) => {
+             if (err) {
+                return res.status(200).send({
+                    message: 'No existe la imagen...'
+                })
+                
+             }
+             else {
+                return res.sendFile(path.resolve(path_file));
+             }
+         })
+        
     }
 };
 
 module.exports = controller;
+
+// fs.access(pathFile,fs.constants.F_OK,(err)=>{
+//     if(!err){
+//         return res.sendFile(path.resolve(pathFile));
+//     }else{
+//         return res.status(200).send({message: "No exisite la imagen"});
+//     }
+// });
